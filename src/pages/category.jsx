@@ -215,7 +215,6 @@ function Category() {
                             size="small"
                             id="clear-filter"
                             onClick={clearFilters}
-                            disabled={!filterData}
                           >
                             Clear Filters
                           </Button>
