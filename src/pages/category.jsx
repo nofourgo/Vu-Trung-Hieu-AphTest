@@ -24,6 +24,7 @@ function Category() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSubmitDisabled, setSubmitDisabled] = useState(true);
+  const [category,setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [rootCategory, setRootCategory] = useState([]);
   const [products, setProducts] = useState([]);
@@ -41,8 +42,6 @@ function Category() {
       console.log("No filter values provided");
       return;
     }
-
-    // Chuẩn bị filter gửi backend
     let filters = {};
     Object.keys(values).forEach((key) => {
       if (values[key] !== undefined && values[key] !== null) {
@@ -50,22 +49,18 @@ function Category() {
       }
     });
 
-    console.table(filters); // log dễ nhìn
-
     try {
-      // --- Nếu slider (width/length) gửi dưới dạng JSON string để backend parse
       if (filters.width) filters.width = JSON.stringify(filters.width);
       if (filters.length) filters.length = JSON.stringify(filters.length);
 
-      // --- Gọi API backend
       const response = await axios.get(
         "http://localhost:3000/Product/GetProductByFilters",
         { params: filters }
       );
       console.log(filters);
 
-      // --- Cập nhật state sản phẩm
       setProducts(response.data.items);
+      setCategory(null);
 
     } catch (err) {
       console.error("Error fetching filtered products:", err);
@@ -90,6 +85,8 @@ function Category() {
         let categoryId = null;
         if (slug) {
           const category = catRes.data.find((c) => c.link === slug);
+          setCategory(category);
+          
           if (category) categoryId = category._id;
         }
 
@@ -291,7 +288,7 @@ function Category() {
 
               <Col span={18}>
                 <div className="_7mkr">
-                  <h2 className="_3rac">Consumer Packaging</h2>
+                  <h2 className="_3rac">{category?.categoryName ? category?.categoryName : `Searched Product`}</h2>
                 </div>
                 <div className="products">
                   {products.map((product) => (
