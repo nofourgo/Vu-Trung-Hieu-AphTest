@@ -78,7 +78,6 @@ function Category() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1️⃣ Lấy danh mục
         const catRes = await axios.get(
           "http://localhost:3000/Category/GetListCategory",
           { params: { lang: "en" } }
@@ -88,14 +87,12 @@ function Category() {
         const root = catRes.data.filter((item) => item.parentId === null);
         setRootCategory(root);
 
-        // 2️⃣ Xác định categoryId từ slug
         let categoryId = null;
         if (slug) {
           const category = catRes.data.find((c) => c.link === slug);
           if (category) categoryId = category._id;
         }
 
-        // 3️⃣ Fetch product
         const prodRes = await axios.get(
           "http://localhost:3000/Product/GetProductByCategorySlug",
           {
@@ -105,7 +102,6 @@ function Category() {
 
         setProducts(prodRes.data.items);
 
-        // 4 Fetch Type of
         const typeOfRes = await axios.get("http://localhost:3000/TypeOf/list")
         setTypeOf(typeOfRes.data);
       } catch (err) {
