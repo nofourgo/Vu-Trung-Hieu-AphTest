@@ -174,7 +174,7 @@
     z-index: 99999;
   }
 
-  .navbar-toggler.collapsed ~ .navbar-collapse {
+  .navbar-toggler.collapsed~.navbar-collapse {
     transition: left 400ms ease-in;
   }
 
@@ -202,7 +202,7 @@
     color: #fff;
   }
 
-  .mobile_menu > .navbar-toggler[aria-expanded="true"] {
+  .mobile_menu>.navbar-toggler[aria-expanded="true"] {
     display: none;
   }
 
@@ -212,7 +212,7 @@
     position: relative;
   }
 
-  .mobile_menu .navbar-nav .nav-item > .nav-mobile-sub {
+  .mobile_menu .navbar-nav .nav-item>.nav-mobile-sub {
     margin-top: 0px;
   }
 
@@ -246,7 +246,7 @@
     animation: unset;
   }
 
-  .nav-mobile-sub > .menu-item {
+  .nav-mobile-sub>.menu-item {
     list-style: none;
     height: 35px;
     display: flex;
@@ -263,7 +263,7 @@
     margin: 0;
   }
 
-  .nav-mobile-sub > .menu-item > a {
+  .nav-mobile-sub>.menu-item>a {
     line-height: 1.3em;
     height: 1.3em;
     display: -webkit-box;
@@ -319,7 +319,7 @@
     color: var(--Color_1);
   }
 
-  .block-top-mobile-menu > a {
+  .block-top-mobile-menu>a {
     color: #ffffff;
     position: relative;
     left: 14px;
@@ -331,8 +331,7 @@
   }
 }
 
-@media only screen and (max-width: 550px) {
-}
+@media only screen and (max-width: 550px) {}
 
 @media only screen and (max-width: 480px) {
   .button-element {
@@ -443,14 +442,84 @@
   }
 }
 
-@media only screen and (max-width: 375px) {
-}
+@media only screen and (max-width: 375px) {}
 
-@media only screen and (max-width: 320px) {
-}
+@media only screen and (max-width: 320px) {}
 
 @media print {
   body {
     margin: 0 !important;
   }
+}
+
+.product-wrapper {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  padding: 10px 0;
+}
+
+.thumb-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: 0.25s;
+  border: 2px solid #d7e8d4;
+  background: #fff;
+}
+
+.thumb.active,
+.thumb:hover {
+  border-color: #7cbc73;
+  transform: scale(1.03);
+}
+
+.main-view {
+  width: 520px;
+  height: 520px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #dfead9;
+}
+
+.main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+
+
+.download-link {
+  display: inline-block;
+  margin-top: 25px;
+  color: #4c8e63;
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}
+.product_infomation{
+  margin-top: 28px;
+}
+.pi-container{
+  display: flex;
+  gap: 20px;
+  color: black;
 }

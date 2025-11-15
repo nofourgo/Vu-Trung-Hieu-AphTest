@@ -7,13 +7,18 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Mousewheel, Pagination, Thumbs } from "swiper/modules";
 import defaultImage from "../assets/images/defaultImage.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 
 function ProductDetail() {
   const { url } = useParams();
 
   const swiperRef = useRef(null);
+  const [product, setProduct] = useState(null);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [direction, setDirection] = useState("vertical");
+  const [images, setImages] = useState([]);
+  const [mainImage, setMainImage] = useState();
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   const updateDirection = () => {
     setDirection(window.innerWidth < 768 ? "horizontal" : "vertical");
@@ -30,8 +35,46 @@ function ProductDetail() {
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
 
-    /* VIẾT CODE CỦA BẠN VÀO ĐÂY */
+    async function fetchProduct() {
+      try {
+        const res = await axios.get(`http://localhost:3000/product/GetProductByUrl`, {
+          params: { url } // gửi url dưới dạng params
+        });
+        const data = res.data; // <- không cần .json()
+
+        console.log("Product data:", data); // log dữ liệu ra console
+
+        if (data) {
+          const allImages = data.media ? [data.thumb, ...data.media] : [data.thumb];
+          setImages(allImages);
+          setMainImage(data.thumb);
+          setProduct(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch product:", err);
+      }
+    }
+
+    fetchProduct();
+
+    async function fetchRelatedProducts() {
+      try {
+        const res = await axios.get(`http://localhost:3000/product/GetRelatedProducts`, {
+          params: { productUrl: url }
+        });
+        const data = res.data; // <- axios trả về res.data
+
+        console.log("Related products data:", data);
+        setRelatedProducts(data?.items || []);
+      } catch (err) {
+        console.error("Failed to fetch related products:", err);
+      }
+    }
+
+    fetchRelatedProducts();
   }, [url]);
+
+
 
   const handleNext = () => {
     if (swiperRef.current) {
@@ -72,7 +115,7 @@ function ProductDetail() {
                       title: "Packaging",
                     },
                     {
-                      title: <span className="active-bread">Food Wrap</span>,
+                      title: <span className="active-bread">{product?.prodName}</span>,
                     },
                   ]}
                   id="breadcrumb"
@@ -86,77 +129,23 @@ function ProductDetail() {
         <div className="section-content relative">
           <div className="_1ghu">
             <div className="_6tdv">
-              <div className="product-vertical-thumbnails">
-                <Swiper
-                  modules={[Mousewheel, Pagination, Thumbs]}
-                  direction={direction}
-                  slidesPerView="auto"
-                  spaceBetween={20}
-                  mousewheel={true}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  watchSlidesProgress={true}
-                  onSwiper={setThumbsSwiper}
-                  className="ThumbGallery GalleryArea"
-                >
-                  <SwiperSlide>
-                    <Image
-                      src="/images/website/product_1.png"
-                      alt="Product Thumb"
-                      fallback={defaultImage}
-                      preview={false}
+              <div className="product-wrapper">
+                {/* Thumbnails */}
+                <div className="thumb-column">
+                  {images.map((img, index) => (
+                    <img
+                      key={index}
+                      src={img}
+                      className={`thumb ${mainImage === img ? "active" : ""}`}
+                      onClick={() => setMainImage(img)}
                     />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Image
-                      src="/images/website/product_2.png"
-                      alt=""
-                      fallback={defaultImage}
-                      preview={false}
-                    />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Image
-                      src="/images/website/product_3.png"
-                      alt=""
-                      fallback={defaultImage}
-                      preview={false}
-                    />
-                  </SwiperSlide>
-                </Swiper>
-                <Image.PreviewGroup>
-                  <Swiper
-                    modules={[Thumbs]}
-                    thumbs={{ swiper: thumbsSwiper }}
-                    className="ProductGallery GalleryArea"
-                  >
-                    <SwiperSlide>
-                      <Image
-                        src="/images/website/product_1.png"
-                        alt="Product Thumb"
-                        fallback={defaultImage}
-                        preview={false}
-                      />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <Image
-                        src="/images/website/product_2.png"
-                        alt=""
-                        fallback={defaultImage}
-                        preview={false}
-                      />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <Image
-                        src="/images/website/product_3.png"
-                        alt=""
-                        fallback={defaultImage}
-                        preview={false}
-                      />
-                    </SwiperSlide>
-                  </Swiper>
-                </Image.PreviewGroup>
+                  ))}
+                </div>
+
+                {/* Main Image */}
+                <div className="main-view">
+                  <img src={mainImage} className="main-img" alt="product" />
+                </div>
               </div>
 
               <div className="_6hoq">
@@ -164,25 +153,25 @@ function ProductDetail() {
                   style={{ textTransform: "none" }}
                   type="link"
                   className="_7lpb"
+                  onClick={() => window.open(product?.dataSheet, "_blank")}
                 >
                   <span>Download data sheet</span>
                   <i className="fa-regular fa-arrow-right"></i>
                 </Button>
               </div>
+
             </div>
             <div className="_5enz">
               <div className="product-info">
                 <h1 className="product-title product_title entry-title">
-                  Food Wrap
+                  {product?.prodName}
                 </h1>
                 <div className="sku">
                   <strong>SKU: </strong>
-                  <span>036897488221-2</span>
+                  <span>{product?.sku}</span>
                 </div>
                 <div className="description">
-                  100% compostable: made from PBAT compostable material, AnEco
-                  food wrap is capable of completely decomposing within 6-12
-                  months into humus, water, Co2.
+                  {product?.shortDesc}
                 </div>
                 <div className="_6zrw">
                   <Link to="/contact-us" className="button button-gradient">
@@ -196,27 +185,42 @@ function ProductDetail() {
                   <h4 className="_9cfu">Performance Features:</h4>
                   <div className="inner-content">
                     <ul>
-                      <li>
-                        With outstanding features to other products on the
-                        market, AnEco compostable cling wrap is transparent,
-                        flexible with a sharp cutting bar, easy for consumers in
-                        food preservation.
-                      </li>
-                      <li>
-                        Convenient thumb opening allows for a safe, easy grasp
-                        on the film
-                      </li>
-                      <li>FDA Compliant</li>
-                      <li>CFIA Compliant</li>
-                      <li>Kosher Compliant</li>
+                      {product?.performanceFeatures.map((feature, index) => (
+                        <li key={index}>{feature}</li>
+                      ))}
                     </ul>
                   </div>
+                  <div className="product_infomation">
+                    <h4 className="_9cfu">Product Information:</h4>
+                    <div className="pi-container">
+                      <div>
+                        <div>Alternative Reference</div>
+                        <div>Width</div>
+                        <div>Length</div>
+                        <div>Maximum Weight</div>
+                        <div>{`Color(s)`}</div>
+                        <div>Material</div>
+                        <div>Recycle</div>
+                      </div>
+                      <div>
+                        <div>{product?.altRef}</div>
+                        <div>{product?.width} cm</div>
+                        <div>{product?.length} cm</div>
+                        <div>{product?.maxWeight} kg</div>
+                        <div>{product?.color}</div>
+                        <div>{product?.material} </div>
+                        <div>{product?.recycle}</div>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
+
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* <section className="spinally-zee section">
         <div className="section-content relative">
@@ -245,7 +249,7 @@ function ProductDetail() {
         </div>
       </section> */}
 
-      <section className="xylomas-goad section">
+      < section className="xylomas-goad section" >
         <div className="section-content relative">
           <div className="_0qkm">
             <Row gutter={30}>
@@ -292,133 +296,35 @@ function ProductDetail() {
                     },
                   }}
                 >
-                  <SwiperSlide>
-                    <Link className="box_project block has-hover" to="">
-                      <div className="media_prj image-zoom">
-                        <Image
-                          src="/images/website/product-list_1.png"
-                          alt="Product Thumb"
-                          fallback={defaultImage}
-                          preview={false}
-                          className="_7omy"
-                        />
-                      </div>
-                      <div className="text_prj">
-                        <h4 className="textLine-2">Food Wrap</h4>
-                        <div className="_7yax">
-                          <strong>SKU&nbsp;</strong>
-                          <span>036897488221-2</span>
+                  {relatedProducts.map((prod, index) => (
+                    <SwiperSlide>
+                      <Link className="box_project block has-hover" to="">
+                        <div className="media_prj image-zoom">
+                          <Image
+                            src={prod.thumb}
+                            alt="Product Thumb"
+                            fallback={defaultImage}
+                            preview={false}
+                            className="_7omy"
+                          />
                         </div>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Link className="box_project block has-hover" to="">
-                      <div className="media_prj image-zoom">
-                        <Image
-                          src="/images/website/product-list_2.png"
-                          alt="Product Thumb"
-                          fallback={defaultImage}
-                          preview={false}
-                          className="_7omy"
-                        />
-                      </div>
-                      <div className="text_prj">
-                        <h4 className="textLine-2">Overlock Jumbo bag</h4>
-                        <div className="_7yax">
-                          <strong>SKU&nbsp;</strong>
-                          <span>036897488221-2</span>
+                        <div className="text_prj">
+                          <h4 className="textLine-2">{prod.prodName}</h4>
+                          <div className="_7yax">
+                            <strong>SKU&nbsp;</strong>
+                            <span>{prod.sku}</span>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Link className="box_project block has-hover" to="">
-                      <div className="media_prj image-zoom">
-                        <Image
-                          src="/images/website/product-list_3.png"
-                          alt="Product Thumb"
-                          fallback={defaultImage}
-                          preview={false}
-                          className="_7omy"
-                        />
-                      </div>
-                      <div className="text_prj">
-                        <h4 className="textLine-2">Food Wrap</h4>
-                        <div className="_7yax">
-                          <strong>SKU&nbsp;</strong>
-                          <span>036897488221-2</span>
-                        </div>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Link className="box_project block has-hover" to="">
-                      <div className="media_prj image-zoom">
-                        <Image
-                          src="/images/website/product-list_4.png"
-                          alt="Product Thumb"
-                          fallback={defaultImage}
-                          preview={false}
-                          className="_7omy"
-                        />
-                      </div>
-                      <div className="text_prj">
-                        <h4 className="textLine-2">Overlock Jumbo bag</h4>
-                        <div className="_7yax">
-                          <strong>SKU&nbsp;</strong>
-                          <span>036897488221-2</span>
-                        </div>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Link className="box_project block has-hover" to="">
-                      <div className="media_prj image-zoom">
-                        <Image
-                          src="/images/website/product-list_5.png"
-                          alt="Product Thumb"
-                          fallback={defaultImage}
-                          preview={false}
-                          className="_7omy"
-                        />
-                      </div>
-                      <div className="text_prj">
-                        <h4 className="textLine-2">Food Wrap</h4>
-                        <div className="_7yax">
-                          <strong>SKU&nbsp;</strong>
-                          <span>036897488221-2</span>
-                        </div>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <Link className="box_project block has-hover" to="">
-                      <div className="media_prj image-zoom">
-                        <Image
-                          src="/images/website/product-list_6.png"
-                          alt="Product Thumb"
-                          fallback={defaultImage}
-                          preview={false}
-                          className="_7omy"
-                        />
-                      </div>
-                      <div className="text_prj">
-                        <h4 className="textLine-2">Overlock Jumbo bag</h4>
-                        <div className="_7yax">
-                          <strong>SKU&nbsp;</strong>
-                          <span>036897488221-2</span>
-                        </div>
-                      </div>
-                    </Link>
-                  </SwiperSlide>
+                      </Link>
+                    </SwiperSlide>
+                  ))}
                 </Swiper>
               </Col>
             </Row>
           </div>
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 }
 
