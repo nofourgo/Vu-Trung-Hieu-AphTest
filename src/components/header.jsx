@@ -1,6 +1,6 @@
 import { Col, Drawer, Flex, Input, Menu, Modal, Row } from "antd";
 import { useState } from "react";
-import Logo from "../assets/images/Logo.png";
+import Logo from "../assets/images/logo.png";
 import EnFlag from "../assets/icons/flags/en.svg";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
