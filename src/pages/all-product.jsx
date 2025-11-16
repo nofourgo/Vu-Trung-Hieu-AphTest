@@ -245,7 +245,7 @@ function AllProduct() {
               <div className="_6npx" key={index}>
                 <div className="_2jjl">
                   <div className="_8ghs">
-                    <a href="#" className="block">
+                    <a href={`category/${item.link}`} className="block">
                       <img
                         src={item.image}
                         className="_9rtu"
