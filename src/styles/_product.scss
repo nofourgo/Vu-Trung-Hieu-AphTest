@@ -373,13 +373,14 @@
     margin: 0 auto;
 
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(630px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 
     ._6npx {
       max-width: 630px;
       background-color: white;
       border-radius: 23px;
+      overflow: hidden;
 
       ._8ynm {
         font-size: 14px;
@@ -388,6 +389,7 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        overflow: hidden
       }
     }
 
@@ -403,6 +405,8 @@
       gap: 20px;
 
       ._8ghs img {
+        width: 303px;
+        height: 303px;
         border-top-left-radius: 23px;
         border-bottom-left-radius: 23px;
 
