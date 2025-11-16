@@ -37,7 +37,7 @@ function ProductDetail() {
 
     async function fetchProduct() {
       try {
-        const res = await axios.get(`http://localhost:3000/product/GetProductByUrl`, {
+        const res = await axios.get(`https://shop-backend-five.vercel.app/product/GetProductByUrl`, {
           params: { url } // gửi url dưới dạng params
         });
         const data = res.data; // <- không cần .json()
@@ -59,7 +59,7 @@ function ProductDetail() {
 
     async function fetchRelatedProducts() {
       try {
-        const res = await axios.get(`http://localhost:3000/product/GetRelatedProducts`, {
+        const res = await axios.get(`https://shop-backend-five.vercel.app/product/GetRelatedProducts`, {
           params: { productUrl: url }
         });
         const data = res.data; // <- axios trả về res.data

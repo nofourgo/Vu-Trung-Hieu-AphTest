@@ -54,7 +54,7 @@ function Category() {
       if (filters.length) filters.length = JSON.stringify(filters.length);
 
       const response = await axios.get(
-        "http://localhost:3000/Product/GetProductByFilters",
+        "https://shop-backend-five.vercel.app/Product/GetProductByFilters",
         { params: filters }
       );
       console.log(filters);
@@ -74,7 +74,7 @@ function Category() {
     const fetchData = async () => {
       try {
         const catRes = await axios.get(
-          "http://localhost:3000/Category/GetListCategory",
+          "https://shop-backend-five.vercel.app/Category/GetListCategory",
           { params: { lang: "en" } }
         );
 
@@ -91,7 +91,7 @@ function Category() {
         }
 
         const prodRes = await axios.get(
-          "http://localhost:3000/Product/GetProductByCategorySlug",
+          "https://shop-backend-five.vercel.app/Product/GetProductByCategorySlug",
           {
             params: slug ? { slug } : {}
           }
@@ -99,7 +99,7 @@ function Category() {
 
         setProducts(prodRes.data.items);
 
-        const typeOfRes = await axios.get("http://localhost:3000/TypeOf/list")
+        const typeOfRes = await axios.get("https://shop-backend-five.vercel.app/TypeOf/list")
         setTypeOf(typeOfRes.data);
       } catch (err) {
         console.error(err);

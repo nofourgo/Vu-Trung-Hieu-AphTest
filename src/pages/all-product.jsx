@@ -28,7 +28,7 @@ function AllProduct() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/Category/GetListCategory", {
+        const response = await axios.get("https://shop-backend-five.vercel.app/Category/GetListCategory", {
           params: { lang: "en" },
         });
 
